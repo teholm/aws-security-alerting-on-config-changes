@@ -1,0 +1,80 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: 'This template creates a CloudWatch Event for all Transit Gateway activities - 7-31-2020'
+
+Resources:
+  SecurityEventsRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: All TGW events sent to SNS
+      Name: Alert-on-all-TGW-events
+      State: ENABLED
+      EventPattern:
+        detail-type:
+          - 'AWS API Call via CloudTrail'
+        detail:
+          eventSource:
+            - ec2.amazonaws.com
+          eventName:
+            - AcceptTransitGatewayVpcAttachment
+            - AssociateTransitGatewayRouteTable
+            - AssociateTransitGatewayMulticastDomain
+            - AcceptTransitGatewayPeeringAttachment
+            - CreateTransitGatewayMulticastDomain
+            - CreateTransitGateway
+            - CreateTransitGatewayRoute
+            - CreateTransitGatewayRouteTable
+            - CreateTransitGatewayVpcAttachment
+            - CreateTransitGatewayPeeringAttachment
+            - DeleteTransitGatewayPeeringAttachment
+            - DeleteTransitGatewayMulticastDomain
+            - DeregisterTransitGatewayMulticastGroupMembers
+            - DeregisterTransitGatewayMulticastGroupSources
+            - DeleteTransitGateway
+            - DeleteTransitGatewayRoute
+            - DeleteTransitGatewayRouteTable
+            - DeleteTransitGatewayVpcAttachment
+            - DisableTransitGatewayRouteTablePropagation
+            - DisassociateTransitGatewayRouteTable
+            - EnableTransitGatewayRouteTablePropagation
+            - ExportTransitGatewayRoutes
+            - GetTransitGatewayAttachmentPropagations
+            - GetTransitGatewayRouteTableAssociations
+            - GetTransitGatewayRouteTablePropagations
+            - ModifyTransitGateway
+            - ModifyTransitGatewayVpcAttachment
+            - RejectTransitGatewayVpcAttachment
+            - ReplaceTransitGatewayRoute
+            - RegisterTransitGatewayMulticastGroupMembers
+            - RegisterTransitGatewayMulticastGroupSources
+            - RejectTransitGatewayPeeringAttachment
+            - SearchTransitGatewayMulticastGroups
+            - SearchTransitGatewayRoutes
+      Targets:
+        -
+          Arn: !Ref SecurityAlertsTopic
+          Id: SecurityAlerts
+
+  SecurityAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: TGWAlert
+      Subscription:
+        - Protocol: email
+          Endpoint: 'youremail@email.com'
+      TopicName: Security-TGW-Change
+
+  SecurityAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 'events.amazonaws.com'
+          Resource: !Ref SecurityAlertsTopic
+          Action: 'sns:Publish'
+      Topics:
+      - !Ref SecurityAlertsTopic

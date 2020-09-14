@@ -1,0 +1,72 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: 'This template creates a CloudWatch Event for security related configuration changes for GuardDuty, APIs: https://docs.aws.amazon.com/guardduty/latest/APIReference/Welcome.html'
+
+Resources:
+  SecurityEventsRuleGuardDuty:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: GuardDuty events sent to SNS
+      Name: Alert-on-GuardDuty-events
+      State: ENABLED
+      EventPattern:
+        detail-type:
+          - 'AWS API Call via CloudTrail'
+        detail:
+          eventSource:
+            - guardduty.amazonaws.com
+          eventName:
+            - AcceptInvitation
+            - CreateDetector
+            - CreateIPSet
+            - CreateMembers
+            - CreatePublishingDestination
+            - CreateThreatIntelSet
+            - DeclineInvitations
+            - DeleteDetector
+            - DeleteInvitations
+            - DeleteIPSet
+            - DeleteMembers
+            - DeletePublishingDestination
+            - DeleteThreatIntelSet
+            - DisableOrganizationAdminAccount
+            - DisassociateFromMasterAccount
+            - DisassociateMembers
+            - InviteMembers
+            - StartMonitoringMembers
+            - StopMonitoringMembers
+            - UpdateDetector
+            - UpdateFilter
+            - UpdateIPSet
+            - UpdateMemberDetectors
+            - UpdateOrganizationConfiguration
+            - UpdatePublishingDestination
+            - UpdateThreatIntelSet
+      Targets:
+        -
+          Arn: !Ref SecurityAlertsTopic
+          Id: SecurityAlerts
+
+  SecurityAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: GDutyAlert
+      Subscription:
+        - Protocol: email
+          Endpoint: 'your@email.com'
+      TopicName: Security-GuardDuty-Change
+
+  SecurityAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 'events.amazonaws.com'
+          Resource: !Ref SecurityAlertsTopic
+          Action: 'sns:Publish'
+      Topics:
+      - !Ref SecurityAlertsTopic

@@ -1,0 +1,68 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: 'This template creates a CloudWatch Event for security related configuration changes for SecurityHub; APIs: https://docs.aws.amazon.com/securityhub/1.0/APIReference/Welcome.html'
+
+Resources:
+  SecurityEventsRuleSecurityHub:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: SecurityHub events sent to SNS
+      Name: Alert-on-SecurityHub-events
+      State: ENABLED
+      EventPattern:
+        detail-type:
+          - 'AWS API Call via CloudTrail'
+        detail:
+          eventSource:
+            - securityhub.amazonaws.com
+          eventName:
+            - AcceptInvitation
+            - BatchDisableStandards
+            - BatchEnableStandards
+            - CreateActionTarget
+            - CreateInsight
+            - CreateMembers
+            - DeclineInvitations
+            - DeclineInvitations
+            - DeleteInsight
+            - DeleteInvitations
+            - DeleteMembers
+            - DisableImportFindingsForProduct
+            - DisableSecurityHub
+            - DisassociateFromMasterAccount
+            - DisassociateMembers
+            - EnableImportFindingsForProduct
+            - EnableSecurityHub
+            - InviteMembers
+            - UpdateActionTarget
+            - UpdateInsight
+            - UpdateSecurityHubConfiguration
+            - UpdateStandardsControl
+      Targets:
+        -
+          Arn: !Ref SecurityAlertsTopic
+          Id: SecurityAlerts
+
+  SecurityAlertsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: SHubAlert
+      Subscription:
+        - Protocol: email
+          Endpoint: 'your@email.com'
+      TopicName: Security-SecurityHub-Change
+
+  SecurityAlertsTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2008-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: 'events.amazonaws.com'
+          Resource: !Ref SecurityAlertsTopic
+          Action: 'sns:Publish'
+      Topics:
+      - !Ref SecurityAlertsTopic

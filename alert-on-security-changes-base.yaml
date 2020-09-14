@@ -1,0 +1,24 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: 'This template is the base template for the nested stack'
+
+Resources:
+  NestedStack1:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: >-
+        https://aws-shared-resources.s3.amazonaws.com/alert-on-SecurityHub-changes.yaml
+      TimeoutInMinutes: '5'
+  NestedStack2:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: >-
+        https://aws-shared-resources.s3.amazonaws.com/alert-on-TGW-changes.yaml
+      TimeoutInMinutes: '5'
+  NestedStack3:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: >-
+        https://aws-shared-resources.s3.amazonaws.com/alert-on-GuardDuty-changes.yaml
+      TimeoutInMinutes: '5'
