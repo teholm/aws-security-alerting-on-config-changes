@@ -22,3 +22,15 @@ Resources:
       TemplateURL: >-
         https://aws-shared-resources.s3.amazonaws.com/alert-on-GuardDuty-changes.yaml
       TimeoutInMinutes: '5'
+  NestedStack4:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: >-
+        https://aws-shared-resources.s3.amazonaws.com/alert-on-VPC-changes.yaml
+      TimeoutInMinutes: '5'
+  NestedStack5:
+    Type: 'AWS::CloudFormation::Stack'
+    Properties:
+      TemplateURL: >-
+        https://aws-shared-resources.s3.amazonaws.com/alert-on-Configuration-changes.yaml
+      TimeoutInMinutes: '5'

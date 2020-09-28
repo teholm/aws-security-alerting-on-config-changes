@@ -4,11 +4,11 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: 'This template creates a CloudWatch Event for security related VPC configuration changes, APIs: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Operations.html'
 
 Resources:
-  SecurityEventsRuleGuardDuty:
+  SecurityEventsRuleVPC:
     Type: AWS::Events::Rule
     Properties:
       Description: VPC events sent to SNS
-      Name: Alert-on-VPC-events
+      Name: SEC-ALERT-VPC-Changed
       State: ENABLED
       EventPattern:
         detail-type:
@@ -93,11 +93,11 @@ Resources:
   SecurityAlertsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: VpcAlert
+      DisplayName: SEC-ALERT-VPC-Changed
       Subscription:
         - Protocol: email
           Endpoint: 'your@email.com'
-      TopicName: Security-VPC-Change
+      TopicName: SEC-ALERT-VPC-Changed
 
   SecurityAlertsTopicPolicy:
     Type: AWS::SNS::TopicPolicy

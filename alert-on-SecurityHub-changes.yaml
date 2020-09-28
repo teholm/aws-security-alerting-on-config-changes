@@ -8,7 +8,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: SecurityHub events sent to SNS
-      Name: Alert-on-SecurityHub-events
+      Name: SEC-ALERT-SecurityHub-Changed
       State: ENABLED
       EventPattern:
         detail-type:
@@ -47,11 +47,11 @@ Resources:
   SecurityAlertsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: SHubAlert
+      DisplayName: SEC-ALERT-SecurityHub-Changed
       Subscription:
         - Protocol: email
           Endpoint: 'your@email.com'
-      TopicName: Security-SecurityHub-Change
+      TopicName: SEC-ALERT-SecurityHub-Changed
 
   SecurityAlertsTopicPolicy:
     Type: AWS::SNS::TopicPolicy

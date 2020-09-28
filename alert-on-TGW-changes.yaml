@@ -4,11 +4,11 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: 'This template creates a CloudWatch Event for all Transit Gateway activities - 7-31-2020'
 
 Resources:
-  SecurityEventsRule:
+  SecurityEventsRuleTGW:
     Type: AWS::Events::Rule
     Properties:
       Description: All TGW events sent to SNS
-      Name: Alert-on-all-TGW-events
+      Name: SEC-ALERT-TGW-Changed
       State: ENABLED
       EventPattern:
         detail-type:
@@ -59,11 +59,11 @@ Resources:
   SecurityAlertsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: TGWAlert
+      DisplayName: SEC-ALERT-TGW-Changed
       Subscription:
         - Protocol: email
           Endpoint: 'youremail@email.com'
-      TopicName: Security-TGW-Change
+      TopicName: SEC-ALERT-TGW-Changed
 
   SecurityAlertsTopicPolicy:
     Type: AWS::SNS::TopicPolicy

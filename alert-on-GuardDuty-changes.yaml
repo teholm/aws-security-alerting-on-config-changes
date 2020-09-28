@@ -8,7 +8,7 @@ Resources:
     Type: AWS::Events::Rule
     Properties:
       Description: GuardDuty events sent to SNS
-      Name: Alert-on-GuardDuty-events
+      Name: SEC-ALERT-GuardDuty-Changed
       State: ENABLED
       EventPattern:
         detail-type:
@@ -51,11 +51,11 @@ Resources:
   SecurityAlertsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: GDutyAlert
+      DisplayName: SEC-ALERT-GuardDuty-Changed
       Subscription:
         - Protocol: email
           Endpoint: 'your@email.com'
-      TopicName: Security-GuardDuty-Change
+      TopicName: SEC-ALERT-GuardDuty-Changed
 
   SecurityAlertsTopicPolicy:
     Type: AWS::SNS::TopicPolicy
